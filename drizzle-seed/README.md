@@ -35,6 +35,39 @@ same sequence of numbers, making your data generation process reproducible.
 
 With drizzle-seed, you get the best of both worlds: the ability to generate realistic fake data and the control to reproduce it whenever needed.
 
+## Supported Databases
+
+`drizzle-seed` supports all databases that Drizzle ORM supports, including:
+
+- **PostgreSQL** (using `pg`, `postgres`, `neon`, etc.)
+- **MySQL** (using `mysql2`, `planetscale-serverless`, etc.)  
+- **SQLite** (using `better-sqlite3`, `libsql`, etc.)
+- **Cloudflare D1** (using `@cloudflare/d1` with Wrangler)
+
+### Cloudflare D1 Support
+
+`drizzle-seed` provides first-class support for Cloudflare D1 databases. You can use it seamlessly with your D1 databases in both local development and production environments:
+
+```ts
+import { drizzle } from 'drizzle-orm/d1';
+import { seed } from 'drizzle-seed';
+import * as schema from './schema';
+
+// In your Cloudflare Worker
+export default {
+  async fetch(request: Request, env: Env): Promise<Response> {
+    const db = drizzle(env.DB, { schema });
+    
+    // Seed your D1 database
+    await seed(db, schema, { count: 100 });
+    
+    return new Response('Database seeded!');
+  },
+};
+```
+
+For complete D1 integration examples, including Wrangler configuration, see our [Cloudflare D1 example](./examples/cloudflare-d1/README.md).
+
 ## Getting started
 
 `npm install drizzle-seed`
