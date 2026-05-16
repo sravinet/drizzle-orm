@@ -1,10 +1,11 @@
 import { D1Database, D1DatabaseAPI } from '@miniflare/d1';
 import { createSQLiteDB } from '@miniflare/shared';
+import { sql } from 'drizzle-orm';
 import type { DrizzleD1Database } from 'drizzle-orm/d1';
 import { drizzle } from 'drizzle-orm/d1';
 import { migrate } from 'drizzle-orm/d1/migrator';
 import { beforeAll, beforeEach, expect, test } from 'vitest';
-import { seed, reset } from '../../src/index.ts';
+import { seed, reset } from '../dist/index.mjs';
 import { d1Schema } from './d1Schema.ts';
 
 const ENABLE_LOGGING = false;
@@ -15,6 +16,27 @@ beforeAll(async () => {
 	const sqliteDb = await createSQLiteDB(':memory:');
 	const d1db = new D1Database(new D1DatabaseAPI(sqliteDb));
 	db = drizzle(d1db, { logger: ENABLE_LOGGING });
+
+	// Create tables
+	await db.run(sql.raw(`
+		CREATE TABLE users (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			name TEXT NOT NULL,
+			email TEXT NOT NULL,
+			created_at INTEGER
+		)
+	`));
+
+	await db.run(sql.raw(`
+		CREATE TABLE posts (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			title TEXT NOT NULL,
+			content TEXT,
+			user_id INTEGER NOT NULL,
+			created_at INTEGER,
+			FOREIGN KEY (user_id) REFERENCES users (id)
+		)
+	`));
 });
 
 beforeEach(async () => {
@@ -65,9 +87,9 @@ test('D1 seeding with refinements', async () => {
 
 test('D1 seeding with relationships', async () => {
 	await seed(db, d1Schema, { count: 3 }).refine((funcs) => ({
-		posts: {
+		users: {
 			with: {
-				users: 2, // 2 posts per user
+				posts: 2, // 2 posts per user
 			},
 		},
 	}));
