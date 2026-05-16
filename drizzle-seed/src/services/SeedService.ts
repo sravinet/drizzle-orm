@@ -6,6 +6,7 @@ import type { PgTable, PgTableWithColumns } from 'drizzle-orm/pg-core';
 import { PgDatabase } from 'drizzle-orm/pg-core';
 import type { SQLiteTable, SQLiteTableWithColumns } from 'drizzle-orm/sqlite-core';
 import { BaseSQLiteDatabase } from 'drizzle-orm/sqlite-core';
+import type { DrizzleD1Database } from 'drizzle-orm/d1';
 import type {
 	GeneratePossibleGeneratorsColumnType,
 	GeneratePossibleGeneratorsTableType,
@@ -1145,7 +1146,8 @@ export class SeedService {
 		db?:
 			| PgDatabase<any>
 			| MySqlDatabase<any, any>
-			| BaseSQLiteDatabase<any, any>,
+			| BaseSQLiteDatabase<any, any>
+			| DrizzleD1Database<any>,
 		schema?: { [key: string]: PgTable | MySqlTable | SQLiteTable },
 		options?: {
 			count?: number;
@@ -1367,7 +1369,8 @@ export class SeedService {
 		db?:
 			| PgDatabase<any>
 			| MySqlDatabase<any, any>
-			| BaseSQLiteDatabase<any, any>;
+			| BaseSQLiteDatabase<any, any>
+			| DrizzleD1Database<any>;
 		schema?: { [key: string]: PgTable | MySqlTable | SQLiteTable };
 		tableName?: string;
 		count?: number;
@@ -1423,7 +1426,7 @@ export class SeedService {
 		} else if (is(db, MySqlDatabase<any, any>)) {
 			maxParametersNumber = this.mysqlMaxParametersNumber;
 		} else {
-			// is(db, BaseSQLiteDatabase<any, any>)
+			// is(db, BaseSQLiteDatabase<any, any>) or is(db, DrizzleD1Database<any>)
 			maxParametersNumber = this.sqliteMaxParametersNumber;
 		}
 		const maxBatchSize = Math.floor(maxParametersNumber / columnsNumber);
@@ -1546,7 +1549,8 @@ export class SeedService {
 		db:
 			| PgDatabase<any, any>
 			| MySqlDatabase<any, any>
-			| BaseSQLiteDatabase<any, any>;
+			| BaseSQLiteDatabase<any, any>
+			| DrizzleD1Database<any>;
 		schema: {
 			[key: string]: PgTable | MySqlTable | SQLiteTable;
 		};
@@ -1583,7 +1587,8 @@ export class SeedService {
 		db:
 			| PgDatabase<any, any>
 			| MySqlDatabase<any, any>
-			| BaseSQLiteDatabase<any, any>;
+			| BaseSQLiteDatabase<any, any>
+			| DrizzleD1Database<any>;
 		schema: {
 			[key: string]: PgTable | MySqlTable | SQLiteTable;
 		};

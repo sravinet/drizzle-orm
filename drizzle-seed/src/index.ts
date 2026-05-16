@@ -18,6 +18,8 @@ import { getTableConfig as getPgTableConfig, PgDatabase, PgTable } from 'drizzle
 import type { SQLiteColumn } from 'drizzle-orm/sqlite-core';
 import { BaseSQLiteDatabase, getTableConfig as getSqliteTableConfig, SQLiteTable } from 'drizzle-orm/sqlite-core';
 
+import type { DrizzleD1Database } from 'drizzle-orm/d1';
+
 import { generatorsFuncs, generatorsFuncsV2 } from './services/GeneratorFuncs.ts';
 import type { AbstractGenerator } from './services/Generators.ts';
 import { SeedService } from './services/SeedService.ts';
@@ -29,7 +31,8 @@ type InferCallbackType<
 	DB extends
 		| PgDatabase<any, any>
 		| MySqlDatabase<any, any>
-		| BaseSQLiteDatabase<any, any>,
+		| BaseSQLiteDatabase<any, any>
+		| DrizzleD1Database<any>,
 	SCHEMA extends {
 		[key: string]: PgTable | PgSchema | MySqlTable | MySqlSchema | SQLiteTable | Relations;
 	},
@@ -99,7 +102,7 @@ type InferCallbackType<
 				};
 			}
 		: {}
-	: DB extends BaseSQLiteDatabase<any, any> ? SCHEMA extends {
+	: DB extends BaseSQLiteDatabase<any, any> | DrizzleD1Database<any> ? SCHEMA extends {
 			[key: string]:
 				| PgTable
 				| PgSchema
@@ -138,7 +141,8 @@ class SeedPromise<
 	DB extends
 		| PgDatabase<any, any>
 		| MySqlDatabase<any, any>
-		| BaseSQLiteDatabase<any, any>,
+		| BaseSQLiteDatabase<any, any>
+		| DrizzleD1Database<any>,
 	SCHEMA extends {
 		[key: string]: PgTable | PgSchema | MySqlTable | MySqlSchema | SQLiteTable | Relations;
 	},
@@ -347,7 +351,8 @@ export function seed<
 	DB extends
 		| PgDatabase<any, any>
 		| MySqlDatabase<any, any, any, any>
-		| BaseSQLiteDatabase<any, any>,
+		| BaseSQLiteDatabase<any, any>
+		| DrizzleD1Database<any>,
 	SCHEMA extends {
 		[key: string]:
 			| PgTable
@@ -364,7 +369,7 @@ export function seed<
 }
 
 const seedFunc = async (
-	db: PgDatabase<any, any> | MySqlDatabase<any, any> | BaseSQLiteDatabase<any, any>,
+	db: PgDatabase<any, any> | MySqlDatabase<any, any> | BaseSQLiteDatabase<any, any> | DrizzleD1Database<any>,
 	schema: {
 		[key: string]:
 			| PgTable
@@ -391,7 +396,7 @@ const seedFunc = async (
 		await seedSqlite(db, schema, { ...options, version }, refinements);
 	} else {
 		throw new Error(
-			'The drizzle-seed package currently supports only PostgreSQL, MySQL, and SQLite databases. Please ensure your database is one of these supported types',
+			'The drizzle-seed package currently supports only PostgreSQL, MySQL, SQLite, and Cloudflare D1 databases. Please ensure your database is one of these supported types',
 		);
 	}
 
@@ -442,7 +447,8 @@ export async function reset<
 	DB extends
 		| PgDatabase<any, any>
 		| MySqlDatabase<any, any, any, any>
-		| BaseSQLiteDatabase<any, any>,
+		| BaseSQLiteDatabase<any, any>
+		| DrizzleD1Database<any>,
 	SCHEMA extends {
 		[key: string]:
 			| PgTable
@@ -473,7 +479,7 @@ export async function reset<
 		}
 	} else {
 		throw new Error(
-			'The drizzle-seed package currently supports only PostgreSQL, MySQL, and SQLite databases. Please ensure your database is one of these supported types',
+			'The drizzle-seed package currently supports only PostgreSQL, MySQL, SQLite, and Cloudflare D1 databases. Please ensure your database is one of these supported types',
 		);
 	}
 }
