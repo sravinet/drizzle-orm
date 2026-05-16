@@ -1,0 +1,31 @@
+{
+	"name": "drizzle-seed-d1-example",
+	"version": "1.0.0",
+	"description": "Example of using drizzle-seed with Cloudflare D1",
+	"main": "seed.ts",
+	"type": "module",
+	"scripts": {
+		"dev": "wrangler dev --local-protocol=https",
+		"deploy": "wrangler deploy",
+		"db:create": "wrangler d1 create drizzle-seed-demo",
+		"db:generate": "drizzle-kit generate",
+		"db:migrate:local": "wrangler d1 migrations apply drizzle-seed-demo --local",
+		"db:migrate:prod": "wrangler d1 migrations apply drizzle-seed-demo",
+		"db:console:local": "wrangler d1 execute drizzle-seed-demo --local --command=\"SELECT name FROM sqlite_master WHERE type='table';\"",
+		"db:console:prod": "wrangler d1 execute drizzle-seed-demo --command=\"SELECT name FROM sqlite_master WHERE type='table';\"",
+		"seed:local": "curl http://localhost:8787/seed",
+		"seed:prod": "curl https://your-worker-url.workers.dev/seed",
+		"reset:local": "curl http://localhost:8787/reset",
+		"reset:prod": "curl https://your-worker-url.workers.dev/reset"
+	},
+	"dependencies": {
+		"drizzle-orm": "latest",
+		"drizzle-seed": "latest"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20240117.0",
+		"drizzle-kit": "latest",
+		"typescript": "^5.0.0",
+		"wrangler": "latest"
+	}
+}

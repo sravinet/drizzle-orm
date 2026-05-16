@@ -1,0 +1,24 @@
+# Cloudflare Workers configuration for D1 + Drizzle Seed example
+name = "drizzle-seed-d1-example"
+main = "seed.ts"
+compatibility_date = "2024-01-15"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "drizzle-seed-demo"
+database_id = "your-d1-database-id-here"
+
+# Local development settings
+[env.local]
+[[env.local.d1_databases]]
+binding = "DB"
+database_name = "drizzle-seed-demo"
+database_id = "local-database"
+
+# Production settings
+[env.production]
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "drizzle-seed-demo"
+database_id = "production-database-id-here"
